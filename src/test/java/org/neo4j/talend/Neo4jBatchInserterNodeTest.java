@@ -42,8 +42,8 @@ public class Neo4jBatchInserterNodeTest extends Neo4jBatchUnitTest {
         // Testing it with real graphdb
         GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbPath);
         try (Transaction tx = graphDb.beginTx()) {
-            String result = graphDb.execute("MATCH (n:" + LABEL_NAME + ") RETURN count(n) AS count").resultAsString();
-            Assert.assertEquals("+-------+\n| count |\n+-------+\n| 100   |\n+-------+\n1 row\n", result);
+            Long result = (Long) graphDb.execute("MATCH (n:" + LABEL_NAME + ") RETURN count(n) AS count").next().get("count");
+            Assert.assertEquals(Long.valueOf(100), result);
         }
         graphDb.shutdown();
     }
@@ -66,8 +66,8 @@ public class Neo4jBatchInserterNodeTest extends Neo4jBatchUnitTest {
         batchDb.shutdown();
         GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbPath);
         try (Transaction tx = graphDb.beginTx()) {
-            String result = graphDb.execute("MATCH (n:" + LABEL_NAME + ") WHERE exists(n.id) RETURN count(*) AS count").resultAsString();
-            Assert.assertEquals("+-------+\n| count |\n+-------+\n| 1     |\n+-------+\n1 row\n", result);
+            Long result = (Long) graphDb.execute("MATCH (n:" + LABEL_NAME + ") WHERE exists(n.id) RETURN count(*) AS count").next().get("count");
+            Assert.assertEquals(Long.valueOf(1), result);
         }
         graphDb.shutdown();
     }

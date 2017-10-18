@@ -86,8 +86,8 @@ public class Neo4jImportToolTest  {
         // Testing it with real graphdb
         GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbPath);
         try (Transaction tx = graphDb.beginTx()) {
-            String result = graphDb.execute("MATCH ()-[r]->() RETURN count(r) AS count").resultAsString();
-            Assert.assertEquals("+-------+\n| count |\n+-------+\n| 9     |\n+-------+\n1 row\n", result);
+            Long result = (Long) graphDb.execute("MATCH ()-[r]->() RETURN count(r) AS count").next().get("count");
+            Assert.assertEquals(Long.valueOf(9), result);
         }
         graphDb.shutdown();
 
